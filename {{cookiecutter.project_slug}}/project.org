@@ -1,3 +1,13 @@
+-*- mode: org; -*-
+
+* Meta
+
+#+TITLE: {{ cookiecutter.project_name }}
+#+AUTHOR: {{ cookiecutter.owner_name }}
+#+EMAIL: {{ cookiecutter.owner_email }}
+#+STARTUP: overview inlineimages
+#+TODO: TODO | INPROGRESS WAIT | DONE CANCELLED
+
 * Setup
 
 ** Environments
@@ -18,10 +28,617 @@
 
 
 
-* Analysis
-
-* Troubleshoot
-
 * Scratch
 
+For scratch work. Ephemeral.
+
+
+* Configurations
+
+The place to put all configuration type data that will go into
+parameterizing other productions and analyses.
+
+** Example
+
+Here is an org mode table we can export to a csv for use in other
+parts of the analysis:
+
+#+TABLE_EXPORT_FILE: 'data/observations.csv'
+| day              | observation |
+|------------------+-------------|
+| <2019-11-14 Thu> | cold        |
+| <2019-11-14 Thu> | warm        |
+
+
+* Workflow
+
+A (mostly) ordered outline of how to proceed from beginning to end.
+
+This is where you can store authoritative command line commands or
+instructions for graphical software.
+
+Inevitably there will be commands that are only ever run once and are
+incidental, these should be kept in the invocations section.
+
+This section is meant to represent a best-effort attempt at the way
+things ought to be.
+
+It will likely be out-of-date often. Don't worry, this is not meant to
+be an executable specification but rather a trail of breadcrumbs and a
+fuzzy topology to orient yourself in long, complex and difficult to
+specify workflows. Improve things when you remember and try to have
+the discipline to copy working solutions from invocations here. If you
+forget it will still be in invocations and won't be lost.
+
+** Example Workflow
+*** Cleaning and Transformation
+
+**** Download the data
+
+#+begin_src bash
+wget bigdata.com/iris_dataset.csv -O data/raw/raw_iris_dataset.csv
+#+end_src
+
+**** Clean the data
+
+#+begin_src bash
+python -m {{cookiecutter.project_name}}.execution.cleaning_and_munge_iris
+#+end_src
+
+**** Extract the data we need
+
+This uses an external tool. I have written a script that uses it:
+#+begin_src bash
+./scripts/extract_tool.sh ./data/raw/raw_iris_dataset.csv
+#+end_src
+
+
+*** Design model
+
+...
+
+*** Run model
+
+**** Run my model
+
+#+begin_src bash
+python -m {{cookiecutter.project_name}}.execution.cleaning_and_munge_iris
+#+end_src
+
+**** Plot results
+
+#+begin_src bash
+python -m {{cookiecutter.project_name}}.execution.cleaning_and_munge_iris
+#+end_src
+
+
+* Analysis
+
+A structured approach to running analytics tasks in python.
+
+In the "Tasks" section you write pure functions to do stuff.
+
+In the workflows you can build up workflows of the tasks in Prefect.
+
+In the execution you write the "scripts" that actually run them.
+
+** Tasks
+
+Define the units of work that you want done here.
+
+This should be done in a functional manner but:
+
+#+begin_quote
+Practicality beats purity
+#+end_quote
+
+Just define them as regular functions here.
+
+They will be decorated with the appropriate functions later to get the
+needed effects.
+
+*** Initialization
+**** Header
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
+  """Generated file from the analysis.org file. Do not edit directly."""
+#+END_SRC
+
+**** Imports
+
+Imported modules that will be available to all tasks
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
+
+  # standard library
+  import os
+  import os.path as osp
+  import pickle
+
+  # de facto standard library
+  import numpy as np
+  import pandas as pd
+  import sqlalchemy as sqla
+  import matplotlib.pyplot as plt
+
+  # extra non-domain specific
+  import joblib
+
+#+END_SRC
+
+**** Configuration
+
+#+begin_src python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
+  PROJECT_PATH = {{ cookiecutter.project_dir }}
+#+end_src
+
+**** Paths
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
+
+  ## Paths
+
+  # for localizing paths to very commonly used resources and resrouces
+  # which may change schema. The directory structure for the rest is the
+  # schema, so just use osp.join(project_path(), 'subpath/to/resource')
+  # for the rest so a lot of work is reduced in specifying all of them
+
+  def data_path():
+      return osp.join(PROJECT_PATH, 'data')
+
+  def db_path():
+      return osp.join(PROJECT_PATH, 'db')
+
+  def media_path():
+      return osp.join(PROJECT_PATH, 'media')
+
+  def scratch_path():
+      return osp.join(PROJECT_PATH, 'scratch')
+
+  def scripts_path():
+      return osp.join(PROJECT_PATH, 'scripts')
+
+  def src_path():
+      return osp.join(PROJECT_PATH, 'src')
+
+  def tmp_path():
+      return osp.join(PROJECT_PATH, 'tmp')
+
+  def troubleshoot_path():
+      return osp.join(PROJECT_PATH, 'troubleshoot')
+
+
+  # specific things
+  def sqlite_path():
+      return osp.join(PROJECT_PATH, 'db/db.sqlite')
+
+  def joblib_cache_path():
+      return osp.join(PROJECT_PATH, 'cache/joblib')
+#+END_SRC
+
+**** Setup
+
+Set up caching of the tasks.
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/_tasks.py
+  ## Setup
+
+  # create the sqlite database
+
+  # set up the joblib cache
+  jlmem = joblib.Memory(joblib_cache_path())
+
+
+
+  # set this when you want to do some recursion stuff with contigtrees
+  def _set_recursion_limit():
+      recursion_limit = 5000
+      import sys; sys.setrecursionlimit(recursion_limit)
+      print("Setting recursion limit to {}".format(recursion_limit))
+
+  # set the recursion depth since it is always needing to be increased
+  set_recursion_limit()
+#+END_SRC
+
+
+**** Data: Read & Write
+
+***** Inferring File Type
+
+These functions infer the type of file you want to write based on the
+file extension.
+
+#+begin_src python
+  def load_obj(filepath):
+
+      import os.path as osp
+      import pickle
+
+      import joblib
+
+      fname = osp.basename(filepath)
+
+      # use the file extension for how to load it
+      if fname.endswith('jl.pkl'):
+          # it is a joblib object so use joblib to load it
+          with open(filepath, 'rb') as rf:
+              obj = joblib.load(rf)
+
+      elif fname.endswith('pkl'):
+          # it is a pickle object so use joblib to load it
+          with open(filepath, 'rb') as rf:
+              obj = pickle.load(rf)
+
+
+      return obj
+
+
+  def save_obj(obj_path, obj, overwrite=False, ext='jl.pkl'):
+
+      import os
+      import os.path as osp
+      import pickle
+      import joblib
+
+      if ext == 'jl.pkl':
+          pickler_dump = joblib.dump
+      elif ext == 'pkl':
+          pickler_dump = pickle.dump
+      else:
+          raise ValueError("Must choose an extension for format selection")
+
+      # if we are not overwriting check if it exists
+      if not overwrite:
+          if osp.exists(obj_path):
+              raise OSError("File exists ({}), not overwriting".format(obj_path))
+
+      # otherwise make sure the directory exists
+      os.makedirs(osp.dirname(obj_path), exist_ok=True)
+
+      # it is a joblib object so use joblib to load it
+      with open(obj_path, 'wb') as wf:
+          pickler_dump(obj, wf)
+
+
+  def load_table(filepath):
+
+      import os.path as osp
+
+      import pandas as pd
+
+      fname = osp.basename(filepath)
+
+      # use the file extension for how to load it
+      if fname.endswith('csv'):
+
+          df = pd.read_csv(filepath, index_col=0)
+
+      elif fname.endswith('pkl'):
+
+          df = pd.read_pickle(filepath)
+
+      else:
+          raise ValueError("extension not supported")
+
+
+
+      return df
+
+  def save_table(table_path, df, overwrite=False, ext='csv'):
+
+      import os
+      import os.path as osp
+      import pickle
+
+      import pandas as pd
+
+      # if we are not overwriting check if it exists
+      if not overwrite:
+          if osp.exists(table_path):
+              raise OSError("File exists ({}), not overwriting".format(table_path))
+
+      # otherwise make sure the directory exists for this observable
+      os.makedirs(osp.dirname(table_path), exist_ok=True)
+
+      if ext == 'csv':
+
+          df.to_csv(table_path)
+
+      elif ext == 'pkl':
+
+          df.to_pickle(table_path)
+
+      else:
+          raise ValueError("extension not supported")
+
+
+
+#+end_src
+
+
+*** Example
+
+#+begin_src python src/{{ cookiecutter.project_name }}/_tasks.py
+  def test():
+      print("Test Function")
+
+  @jlmem.cache
+  def important_calculation(message):
+
+      # imports should be made inside each function
+      import time
+
+      print("Calculating...")
+      print(message)
+      time.sleep(10)
+      print("Done calculating")
+
+      return "The results..."
+#+end_src
+
+
+
+** Prefect Workflows
+
+*** Header
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/_pipelines.py
+  """Generated file from the analysis.org file. Do not edit directly."""
+
+  import inspect
+
+  from prefect import Flow
+  import prefect
+
+  import {{cookiecutter.project_name}}._tasks as tasks_module
+
+  # these helper functions are for automatically listing all of the
+  # functions defined in the tasks module
+  def is_mod_function(mod, func):
+      return inspect.isfunction(func) and inspect.getmodule(func) == mod
+
+  def get_functions(mod):
+
+      # get only the functions that aren't module functions and that
+      # aren't private
+      return {func.__name__ : func for func in mod.__dict__.values()
+              if (is_mod_function(mod, func) and
+                  not func.__name__.startswith('_')) }
+
+  # get the task functions and wrap them as prefect tasks
+  tasks = {name : prefect.task(func)
+           for name, func in get_functions(tasks_module).items()}
+#+END_SRC
+
+
+*** Example
+
+#+begin_src python :tangle src/{{ cookiecutter.project_name }}/_pipelines.py
+
+  test_flow = Flow("Test flow")
+
+  # you can add tasks this way:
+  with test_flow:
+      result = tasks['test']()
+
+#+end_src
+
+
+** Execution
+
+A less heavyweight alternative to running pipelines like below.
+
+Each execution instance will become a submodule of the
+'project_name.execution' module.
+
+You can run them like this:
+
+#+begin_src bash
+python -m project_name.execution.my_execution_script
+#+end_src
+
+Execution scripts should be self contained in terms of domain
+parameters.
+
+An execution script may have command line parameters related to
+execution tweaking. I.e. which dask cluster to use, how many cores,
+etc.
+
+**** Executors
+
+Functions that allow for specifying different executions. These should
+only be called under ~if __name__ == "__main__"~ blocks as they will
+ask for command line input.
+
+***** Local Machine
+
+Trivial example of an executor that just runs the function.
+
+#+begin_src python :tangle src/{{ cookiecutter.project_name }}/execution/__init__.py
+  def execute_locally(func):
+      func()
+#+end_src
+
+
+
+***** Local Dask Cluster
+
+Either connect to an existing dask cluster or start one up locally.
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/__init__.py
+
+  def dask_execute(func, processes=False, n_workers=4):
+
+      import sys
+
+      from dask.distributed import Client, LocalCluster
+
+      cluster_address = sys.argv[1]
+
+      DASHBOARD_PORT = 9998
+      if cluster_address == ':local':
+          cluster = LocalCluster(processes=processes,
+                                 n_workers=n_workers,
+                                 dashboard_address=":{}".format(DASHBOARD_PORT))
+          print("Ad hoc cluster online. Dashboard on port {}".format(DASHBOARD_PORT))
+
+          client = Client(cluster)
+
+      else:
+          client = Client(cluster_address)
+
+
+      func(client)
+#+END_SRC
+
+
+***** Prefect Pipeline
+
+**** Scripts
+
+***** Example: Raw
+
+An example showing that you don't need any framework to help you run
+something.
+
+While tasks should be functional (and the only state saved is caching)
+you can handle side effects like saving files etc. here.
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/example_raw.py
+
+  def make_result(message):
+
+      from {{cookiecutter.project_name}}._tasks import test
+
+      test()
+
+      return "Here is the result: " + message
+
+
+  if __name__ == "__main__":
+
+
+      result = make_result("Testing execution out")
+
+
+#+END_SRC
+
+***** Example: Using a Dask Cluster
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/example_dask.py
+  # the function here where the first argument must be a client to the
+  # cluster
+  def func_closure(client):
+
+      from {{ cookiecutter.project_name }}._tasks import important_calculation
+
+      result = client.submit(important_calculation, "logging..").result()
+
+      # this defines which format to save it in, we are using the joblib
+      # pickle format
+      ext = 'jl.pkl'
+
+      result_file_path = osp.join(data_path(), f'my_results/result_A.{ext}')
+
+      # save the result to the file data store in the joblib pickle
+      # format
+      save_obj(result_file_path,
+               result,
+               overwrite=True,
+               ext='jl.pkl')
+
+
+  if __name__ == "__main__":
+
+      from {{ cookiecutter.project_name }}.execution import execute
+
+      # execute and receive options from command line
+      dask_execute(func_closure)
+
+#+END_SRC
+
+***** Example: Prefect Flow
+
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/example_flow.py
+  if __name__ == "__main__":
+
+      from prefect.engine.executors import Executor
+
+      # get the flow
+      from seh_pathway_hopping._pipelines import test_flow
+
+      # instantiate an executor from Prefect. We use the local one here
+      # for testing
+      executor = Executor()
+
+      # run the flow with the executor
+      state = test_flow.run(executor=executor)
+#+END_SRC
+
+
+
+
+
+
+
+** Troubleshooting
+
+
+* Invocations
+
+The actual invocations you will make on the command line to run stuff.
+
+Use TODO or checkboxes to manage them.
+
+** INPROGRESS Example: running executions
+
+*** DONE run the dask calculation locally
+
+#+begin_src bash
+python -m {{ cookiecutter.project_name}}.execution.example_dask ':local'
+#+end_src
+
+It worked fine so now I will run it on the cluster.
+
+*** WAIT run dask calcultion on the cluster
+
+#+begin_src bash
+python -m {{ cookiecutter.project_name}}.execution.example_dask 'my.superhuge.computer.net:1111'
+#+end_src
+
+Waiting for results...
+
+
+
+* Management
+
+Area for managed data like lists and spreadsheets.
+
+Data that isn't in a runtime and is more reference to help yourself.
+
 * Log
+
+Log of activities
+
+** <2019-11-13 Wed>
+
+Notes for today...
+
+
+* COMMENT Scrapyard
+
+Things you don't want to throw away but you don't want to keep in the
+clean sections above.
+
+** Scratch
+
+** Analysis
+
+** Invocation
+
+* COMMENT Local Variables
+
+# Local Variables:
+# mode: org
+# org-todo-keyword-faces: (("TODO" . org-warning) ("INPROGRESS" . "magenta") ("WAIT" . "orange") ("DONE" . org-done) ("CANCELLED" . org-done))
+# org-table-export-default-format: orgtbl-to-csv
+# End:
