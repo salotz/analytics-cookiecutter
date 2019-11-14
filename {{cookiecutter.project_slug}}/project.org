@@ -1,0 +1,27 @@
+* Setup
+
+** Environments
+
+*** Python
+
+
+**** Pip
+
+#+begin_src fundamental :tangle scripts/requirements.txt
+#+end_src
+
+**** Conda
+
+#+begin_src fundamental :tangle scripts/conda_env.yaml
+#+end_src
+
+
+
+
+* Analysis
+
+* Troubleshoot
+
+* Scratch
+
+* Log

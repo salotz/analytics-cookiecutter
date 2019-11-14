@@ -1,0 +1,11 @@
+{
+    "project_name" : "My Nameless Project",
+    "project_slug" : "nameless",
+    "copyright" : "BY-NC",
+    "owner_name" : "Joe Shmo",
+    "owner_email" : "joe@shmo.com",
+    "owner_nickname" : "jshmo",
+    "shell_profile" : "common",
+    "refugue_domain" : "work",
+    "py_version" : "3.7"
+}
