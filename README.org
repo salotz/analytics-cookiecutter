@@ -1,0 +1,102 @@
+
+
+* Analytics Cookiecutter
+
+A cookiecutter with some super powers. 
+
+
+** Motivation
+
+This is the first part of a larger work (in progress) for a system of
+templates for different projects, with builtin task automation via the
+python [[https://www.pyinvoke.org/][Invoke]] package.
+
+Part of the task automation will be updating the built-in modules
+themselves, so that improving general purpose automation can benefit
+all projects made with the template.
+
+The motivation for this style of package is that for messy kinds of
+projects (like for doing analytics) is that they are all essentially
+unique. They are each snowflakes. We take the point of view that for
+growing systems and exploratory analyses this is unavoidable and that
+we should just own up to it and deal with it the best we can. We aim
+to chisel away incrementally the snowflakeness of each project by
+allowing contributions from general purpose automation scripts. This
+design also allows for certain projects to break away completely from
+the release cycle of the main project and fully couple itself to its
+own special build process. This is how projects get done.
+
+The design may change drastically as we try new things out.
+
+
+** Installation
+
+There is no specific package to install just make sure you have
+cookiecutter installed, roughly:
+
+#+begin_src bash
+pip install cookiecutter
+#+end_src
+
+Then you can just make repos from the template:
+
+#+begin_src bash
+cookiecutter https://github.com/salotz/analytics-cookiecutter.git
+#+end_src
+
+Where you will be prompted for details.
+
+** Getting Started
+
+Once you have a project made go into that directory and install the
+basic tooling requirements for running the automation. Do this in a
+general purpose python environment, not much will be installed. There
+is automation for repo specific environments that we will do later.
+
+#+begin_src bash
+pip install -r tools.requirements.txt
+#+end_src
+
+Now you can see which commands are available to you by running this
+command:
+
+#+begin_src bash
+inv -l
+#+end_src
+
+This is using the 'invoke' CLI to look inside of the 'tasks' directory
+to get the available commands.
+
+You should always run 'inv' from this root of the project.
+
+Now we can initialize the project which will generate some folders and
+set up version control.
+
+#+begin_src bash
+inv project.init
+#+end_src
+
+Then we can make our environment to actually do stuff in:
+
+#+begin_src bash
+inv env.dev
+#+end_src
+
+If you want to update the built-in task modules run:
+
+#+begin_src bash
+inv update.update
+#+end_src
+
+** Configuring Tasks
+
+Configuration is done in the ~tasks/config.py~. Don't edit the
+~tasks/sysconfig.py~ as this is managed by the update process.
+
+** Custom Automation Tasks
+
+If you want to add custom automation to the interface you can start by
+adding invoke tasks to the ~tasks/plugins/custom.py~ file.
+
+Otherwise you will need to make new modules in the plugins dir and
+install them in the config file.
