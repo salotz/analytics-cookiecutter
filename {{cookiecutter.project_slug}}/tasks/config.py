@@ -6,8 +6,11 @@ from .sysconfig import *
 
 # import plugins:
 
-# specify which plugins to install
-PLUGIN_MODULES = []
+from .plugins import custom
+
+# specify which plugins to install, the custom one is included by
+# default to get users going
+PLUGIN_MODULES = [custom, ]
 
 ### Project Metadata
 
