@@ -82,7 +82,7 @@ wget bigdata.com/iris_dataset.csv -O data/raw/raw_iris_dataset.csv
 **** Clean the data
 
 #+begin_src bash
-python -m {{cookiecutter.project_name}}.execution.cleaning_and_munge_iris
+python -m {{cookiecutter.project_slug}}.execution.cleaning_and_munge_iris
 #+end_src
 
 **** Extract the data we need
@@ -102,13 +102,13 @@ This uses an external tool. I have written a script that uses it:
 **** Run my model
 
 #+begin_src bash
-python -m {{cookiecutter.project_name}}.execution.cleaning_and_munge_iris
+python -m {{cookiecutter.project_slug}}.execution.cleaning_and_munge_iris
 #+end_src
 
 **** Plot results
 
 #+begin_src bash
-python -m {{cookiecutter.project_name}}.execution.cleaning_and_munge_iris
+python -m {{cookiecutter.project_slug}}.execution.cleaning_and_munge_iris
 #+end_src
 
 
@@ -168,7 +168,7 @@ Imported modules that will be available to all tasks
 **** Configuration
 
 #+begin_src python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
-  PROJECT_PATH = {{ cookiecutter.project_dir }}
+  PROJECT_PATH = "{{ cookiecutter.project_dir }}"
 #+end_src
 
 **** Paths
@@ -219,7 +219,7 @@ Imported modules that will be available to all tasks
 
 Set up caching of the tasks.
 
-#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/_tasks.py
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
   ## Setup
 
   # create the sqlite database
@@ -357,7 +357,7 @@ file extension.
 
 *** Example
 
-#+begin_src python src/{{ cookiecutter.project_name }}/_tasks.py
+#+begin_src python src/{{ cookiecutter.project_slug }}/_tasks.py
   def test():
       print("Test Function")
 
@@ -381,7 +381,7 @@ file extension.
 
 *** Header
 
-#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/_pipelines.py
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/_pipelines.py
   """Generated file from the analysis.org file. Do not edit directly."""
 
   import inspect
@@ -389,7 +389,7 @@ file extension.
   from prefect import Flow
   import prefect
 
-  import {{cookiecutter.project_name}}._tasks as tasks_module
+  import {{cookiecutter.project_slug}}._tasks as tasks_module
 
   # these helper functions are for automatically listing all of the
   # functions defined in the tasks module
@@ -412,7 +412,7 @@ file extension.
 
 *** Example
 
-#+begin_src python :tangle src/{{ cookiecutter.project_name }}/_pipelines.py
+#+begin_src python :tangle src/{{ cookiecutter.project_slug }}/_pipelines.py
 
   test_flow = Flow("Test flow")
 
@@ -453,7 +453,7 @@ ask for command line input.
 
 Trivial example of an executor that just runs the function.
 
-#+begin_src python :tangle src/{{ cookiecutter.project_name }}/execution/__init__.py
+#+begin_src python :tangle src/{{ cookiecutter.project_slug }}/execution/__init__.py
   def execute_locally(func):
       func()
 #+end_src
@@ -464,7 +464,7 @@ Trivial example of an executor that just runs the function.
 
 Either connect to an existing dask cluster or start one up locally.
 
-#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/__init__.py
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/execution/__init__.py
 
   def dask_execute(func, processes=False, n_workers=4):
 
@@ -503,11 +503,11 @@ something.
 While tasks should be functional (and the only state saved is caching)
 you can handle side effects like saving files etc. here.
 
-#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/example_raw.py
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/execution/example_raw.py
 
   def make_result(message):
 
-      from {{cookiecutter.project_name}}._tasks import test
+      from {{cookiecutter.project_slug}}._tasks import test
 
       test()
 
@@ -524,12 +524,12 @@ you can handle side effects like saving files etc. here.
 
 ***** Example: Using a Dask Cluster
 
-#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/example_dask.py
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/execution/example_dask.py
   # the function here where the first argument must be a client to the
   # cluster
   def func_closure(client):
 
-      from {{ cookiecutter.project_name }}._tasks import important_calculation
+      from {{ cookiecutter.project_slug }}._tasks import important_calculation
 
       result = client.submit(important_calculation, "logging..").result()
 
@@ -549,7 +549,7 @@ you can handle side effects like saving files etc. here.
 
   if __name__ == "__main__":
 
-      from {{ cookiecutter.project_name }}.execution import execute
+      from {{ cookiecutter.project_slug }}.execution import execute
 
       # execute and receive options from command line
       dask_execute(func_closure)
@@ -558,7 +558,7 @@ you can handle side effects like saving files etc. here.
 
 ***** Example: Prefect Flow
 
-#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_name }}/execution/example_flow.py
+#+BEGIN_SRC python :tangle src/{{ cookiecutter.project_slug }}/execution/example_flow.py
   if __name__ == "__main__":
 
       from prefect.engine.executors import Executor
@@ -594,7 +594,7 @@ Use TODO or checkboxes to manage them.
 *** DONE run the dask calculation locally
 
 #+begin_src bash
-python -m {{ cookiecutter.project_name}}.execution.example_dask ':local'
+python -m {{ cookiecutter.project_slug}}.execution.example_dask ':local'
 #+end_src
 
 It worked fine so now I will run it on the cluster.
@@ -602,7 +602,7 @@ It worked fine so now I will run it on the cluster.
 *** WAIT run dask calcultion on the cluster
 
 #+begin_src bash
-python -m {{ cookiecutter.project_name}}.execution.example_dask 'my.superhuge.computer.net:1111'
+python -m {{ cookiecutter.project_slug}}.execution.example_dask 'my.superhuge.computer.net:1111'
 #+end_src
 
 Waiting for results...
