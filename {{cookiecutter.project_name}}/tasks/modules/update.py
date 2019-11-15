@@ -28,9 +28,9 @@ def update(cx):
     # with them
     print("Updating tasks/sysconfig.py")
     cx.run(f"cp -f {repo_path}/" +
-           "*cookiecutter.project_slug*/tasks/sysconfig.py ./tasks/sysconfig.py",
+           "*cookiecutter.project_name*/tasks/sysconfig.py ./tasks/sysconfig.py",
            pty=True)
 
     print("Updating tasks/modules")
     cx.run(f"cp -rf {repo_path}/" +
-           "*cookiecutter.project_slug*/tasks/modules/ ./tasks/")
+           "*cookiecutter.project_name*/tasks/modules/ ./tasks/")
