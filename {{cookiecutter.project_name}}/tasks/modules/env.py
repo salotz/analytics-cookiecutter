@@ -19,7 +19,7 @@ def common(cx):
     cx.run(f"$ANACONDA_DIR/envs/{PY_ENV_NAME}/bin/pip install -e .")
 
     # install the pip dev dependencies
-    cx.run(f"$ANACONDA_DIR/envs/{PY_ENV_NAME}/bin/pip install -r configs/requirements.txt")
+    cx.run(f"$ANACONDA_DIR/envs/{PY_ENV_NAME}/bin/pip install -r configs/{env_subname}.requirements.txt")
 
     # install the conda dev dependencies
     cx.run(f"conda env update -n {PY_ENV_NAME} --file configs/{env_subname}.env.yaml")
