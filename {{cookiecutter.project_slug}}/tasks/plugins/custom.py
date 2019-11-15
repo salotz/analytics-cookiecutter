@@ -7,4 +7,5 @@ from ..config import *
 
 @task
 def hello(cx):
+    """An example custom user task from the plugins."""
     print("Hello")
