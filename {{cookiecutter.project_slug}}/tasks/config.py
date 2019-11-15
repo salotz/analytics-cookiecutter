@@ -1,4 +1,8 @@
-"""Default settings for a project."""
+"""User settings for a project."""
+
+# load the system configuration. You can override them in this module,
+# but beware it might break stuff
+from .sysconfig import *
 
 # import plugins:
 
@@ -39,6 +43,13 @@ SHELL_PROFILE = "{{ cookiecutter.shell_profile }}"
 # the subdomain of tree this project is in
 REFUGUE_DOMAIN = '{{ cookiecutter.refugue_domain }}'
 
+## Updating
+
+# where to download git repos to; the "cookiejar"
+COOKIEJAR_DIR = "$HOME/tmp/cookiejar"
+
+# URL to get updates from
+UPDATE_URL="https://github.com/salotz/analytics-cookiecutter.git"
 
 ### Project Configuration
 

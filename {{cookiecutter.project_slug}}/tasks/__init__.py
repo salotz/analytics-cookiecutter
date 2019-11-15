@@ -8,13 +8,14 @@ from .modules import meta
 from .modules import project
 from .modules import org
 from .modules import env
+from .modules import update
 
 # add all of the modules to the CLI
 ns = Collection()
 
 
 # first load all of the core objects
-modules = [core, py, git, project, org, env,]
+modules = [core, py, git, project, org, env, update, ]
 
 for module in modules:
     ns.add_collection(module)
@@ -23,11 +24,11 @@ for module in modules:
 
 try:
     # import all the user defined stuff and override
-    from .config import plugin_modules as plugins
+    from .config import PLUGIN_MODULES as plugins
 
     for module in plugins:
         ns.add_collection(module)
 
 except Exception as e:
-    print("Loading plugins failed with error ignoreing:")
+    print("Loading plugins failed with error ignoring:")
     print(e)

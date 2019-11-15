@@ -1,6 +1,6 @@
 {
     "project_name" : "grouping.project_name",
-    "project_slug" : "nameless",
+    "project_slug" : "default_analytics-cookiecutter_project",
     "project_description" : "New Analytics project",
     "copyright" : "BY-NC",
     "owner_name" : "Joe Shmo",
