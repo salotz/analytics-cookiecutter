@@ -1,0 +1,14 @@
+*~
+
+# always keep the .keep files so we preserve directory structure, even
+# if there are no files. This is useful for generating files from some
+# literate file (i.e. building them)
+!**/.keep
+
+
+# ignore the tangling scripts
+/scripts
+/configs
+
+/tmp
+dask-worker-space
