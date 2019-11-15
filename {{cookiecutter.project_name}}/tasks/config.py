@@ -75,7 +75,7 @@ PROJECT_DIRS = [
 
 ### Environments
 
-PY_ENV_NAME = '{{ cookiecutter.project_name }}-project'
+PY_ENV_NAME = '{{ cookiecutter.project_name }}.project'
 PY_VERSION = '{{ cookiecutter.py_version }}'
 
 ### VCS
