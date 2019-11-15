@@ -1,4 +1,4 @@
-from invoke import Collection, task
+from invoke import Collection, Task, task
 
 import inspect
 
@@ -18,16 +18,16 @@ from .modules import update
 
 # these helper functions are for automatically listing all of the
 # functions defined in the tasks module
-def _is_mod_function(mod, func):
-    return inspect.isfunction(func) and inspect.getmodule(func) == mod
+
+def _is_mod_task(mod, func):
+    return issubclass(type(func), Task) and inspect.getmodule(func) == mod
 
 def _get_functions(mod):
     """get only the functions that aren't module functions and that
     aren't private (i.e. start with a '_')"""
 
     return {func.__name__ : func for func in mod.__dict__.values()
-            if (_is_mod_function(mod, func) and
-                not func.__name__.startswith('_')) }
+            if _is_mod_task(mod, func) }
 
 # add all of the modules to the CLI
 ns = Collection()
