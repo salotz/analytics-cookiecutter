@@ -28,14 +28,14 @@ def update(cx):
     # with them
     print("Updating tasks/sysconfig.py")
     cx.run(f"cp -f {repo_path}/" +
-           "*/tasks/sysconfig.py ./tasks/sysconfig.py",
+           "*cookiecutter.project_slug*/tasks/sysconfig.py ./tasks/sysconfig.py",
            pty=True)
 
     print("Updating tasks/modules")
     cx.run(f"cp -rf {repo_path}/" +
-           "*cookiecutter.project_slug*/tasks/modules ./tasks/modules")
+           "*cookiecutter.project_slug*/tasks/modules/ ./tasks/")
 
-
+# testing update
 @task
-def test_dummy(cx):
-    print("it works!")
+def dummy(cx):
+    pass
