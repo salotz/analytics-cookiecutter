@@ -17,12 +17,12 @@
 
 **** Pip
 
-#+begin_src fundamental :tangle scripts/requirements.txt
+#+begin_src fundamental :tangle configs/requirements.txt
 #+end_src
 
 **** Conda
 
-#+begin_src fundamental :tangle scripts/conda_env.yaml
+#+begin_src fundamental :tangle configs/conda_env.yaml
 #+end_src
 
 

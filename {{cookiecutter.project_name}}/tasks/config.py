@@ -63,6 +63,7 @@ PROJECT_DIR = "{{ cookiecutter.project_dir }}"
 PROJECT_DIRS = [
     'src',
     'scripts',
+    'configs',
     'data',
     'cache',
     'db',

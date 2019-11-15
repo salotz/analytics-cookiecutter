@@ -10,7 +10,7 @@ def tangle(cx):
     cx.run("emacs -Q --batch -l org project.org -f org-babel-tangle")
 
     # make them executable
-    cx.run(f'chmod ug+x {PROJECT_DIR}/hpcc/scripts/*')
+    cx.run(f'chmod ug+x {PROJECT_DIR}/scripts/*')
 
 @task
 def clean(cx):
