@@ -1,5 +1,10 @@
 from invoke import Collection, task
 
+import inspect
+
+# the toplevel commands module
+from . import toplevel
+
 # core modules for this project
 from .modules import core
 from .modules import py
@@ -10,17 +15,36 @@ from .modules import org
 from .modules import env
 from .modules import update
 
+
+# these helper functions are for automatically listing all of the
+# functions defined in the tasks module
+def _is_mod_function(mod, func):
+    return inspect.isfunction(func) and inspect.getmodule(func) == mod
+
+def _get_functions(mod):
+    """get only the functions that aren't module functions and that
+    aren't private (i.e. start with a '_')"""
+
+    return {func.__name__ : func for func in mod.__dict__.values()
+            if (_is_mod_function(mod, func) and
+                not func.__name__.startswith('_')) }
+
 # add all of the modules to the CLI
 ns = Collection()
 
+# get all the functions from the toplevel module, and add them to the
+# toplevel collection
+for func in _get_functions(toplevel).values():
+    ns.add_task(func)
 
-# first load all of the core objects
+
+# then load all of the submodule namespaces
 modules = [core, py, git, project, org, env, update, ]
 
 for module in modules:
     ns.add_collection(module)
 
-# then the user defined stuff
+# then the user defined plugins
 
 try:
     # import all the user defined stuff and override

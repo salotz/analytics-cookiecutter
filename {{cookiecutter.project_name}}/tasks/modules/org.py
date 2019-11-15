@@ -4,6 +4,7 @@ from ..config import *
 
 @task()
 def tangle(cx):
+    """Tangle all the code blocks in project.org"""
 
     # tangle them
     cx.run("emacs -Q --batch -l org project.org -f org-babel-tangle")
@@ -13,5 +14,10 @@ def tangle(cx):
 
 @task
 def clean(cx):
+    """Clean all the code that is tangled to:
+
+    - scripts
+
+    """
 
     cx.run("rm -f scripts/*")
