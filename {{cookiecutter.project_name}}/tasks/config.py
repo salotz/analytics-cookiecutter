@@ -59,8 +59,7 @@ UPDATE_URL="https://github.com/salotz/analytics-cookiecutter.git"
 # directory that the project is actually living in
 PROJECT_DIR = "{{ cookiecutter.project_dir }}"
 
-# directories which will be assumed to exist, these will be built with
-# the "init" command
+# directories which will be assumed to exist
 PROJECT_DIRS = [
     'src',
     'scripts',

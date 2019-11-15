@@ -13,12 +13,6 @@ def init(cx):
         cx.run("mkdir -p {}".format(d))
         cx.run("touch {}/.keep".format(d))
 
-    # generate the project.org file
-    cx.run("")
-
-
-
-
 @task
 def link_resources(ctx):
     """Make links to the project resource folders in this project"""
