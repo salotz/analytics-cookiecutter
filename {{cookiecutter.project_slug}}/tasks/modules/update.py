@@ -34,3 +34,8 @@ def update(cx):
     print("Updating tasks/modules")
     cx.run(f"cp -rf {repo_path}/" +
            "*cookiecutter.project_slug*/tasks/modules ./tasks/modules")
+
+
+@task
+def test_dummy(cx):
+    print("it works!")
