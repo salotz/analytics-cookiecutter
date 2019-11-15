@@ -9,6 +9,7 @@
 # ignore the tangling scripts
 /scripts
 /configs
+/troubleshoot
 
 /tmp
 dask-worker-space
