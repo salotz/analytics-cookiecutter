@@ -12,17 +12,19 @@
 
 ** Environments
 
-*** Python
-
+*** Common
 
 **** Pip
 
-#+begin_src fundamental :tangle configs/requirements.txt
+#+begin_src fundamental :tangle configs/common.requirements.txt
 #+end_src
 
 **** Conda
 
-#+begin_src fundamental :tangle configs/conda_env.yaml
+#+begin_src fundamental :tangle configs/common.env.yaml
+channels:
+  - conda-forge
+  - defaults
 #+end_src
 
 

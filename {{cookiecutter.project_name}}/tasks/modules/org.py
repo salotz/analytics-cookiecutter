@@ -21,3 +21,4 @@ def clean(cx):
     """
 
     cx.run("rm -f scripts/*")
+    cx.run("rm -f configs/*")
