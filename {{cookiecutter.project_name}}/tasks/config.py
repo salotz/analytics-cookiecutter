@@ -57,7 +57,7 @@ UPDATE_URL="https://github.com/salotz/analytics-cookiecutter.git"
 ### Project Configuration
 
 # directory that the project is actually living in
-PROJECT_DIR = f"$TREE/{REFUGUE_DOMAIN}/projects/{PROJECT_SLUG}"
+PROJECT_DIR = "{{ cookiecutter.project_dir }}"
 
 # directories which will be assumed to exist, these will be built with
 # the "init" command
@@ -75,7 +75,7 @@ PROJECT_DIRS = [
 
 ### Environments
 
-PY_ENV_NAME = '{{ cookiecutter.project_slug }}-project'
+PY_ENV_NAME = '{{ cookiecutter.project_name }}-project'
 PY_VERSION = '{{ cookiecutter.py_version }}'
 
 ### VCS
@@ -95,7 +95,7 @@ GIT_LFS_TARGETS = []
 
 # Project resources are things that get managed outside of the actual
 # directory tree that it sits in
-RESOURCE_DIR = f"$TREE/{REFUGUE_DOMAIN}/resources/project-resources/{PROJECT_NAME}"
+RESOURCE_DIR = {% if cookiecutter.refugue_domain is ne ':none' %}"$TREE/{{cookiecutter.refugue_domain}}/resources/project-resources/{{cookiecutter.project_name}}"{% else %}None{% endif %}
 
 RESOURCES = [
     'cache',
