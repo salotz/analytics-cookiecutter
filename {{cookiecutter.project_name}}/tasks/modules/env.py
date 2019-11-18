@@ -4,25 +4,24 @@ from ..config import *
 
 from . import org as org_tasks
 
-import sys
-
-@task(pre=[org_tasks.tangle])
-def common(cx):
+@task(pre=[org_tasks.tangle], default=True)
+def build(cx, name='common'):
     """Recreate from scratch the wepy development environment."""
 
-    env_subname = 'common'
+    env_name=f"wepy.lysozyme_test.{name}"
 
-    cx.run(f"conda create -y -n {PY_ENV_NAME} python={PY_VERSION}",
+    cx.run(f"conda create -y -n {env_name} python={PY_VERSION}",
         pty=True)
 
     # install the local package
-    cx.run(f"$ANACONDA_DIR/envs/{PY_ENV_NAME}/bin/pip install -e .")
+    cx.run(f"$ANACONDA_DIR/envs/{env_name}/bin/pip install -e .")
 
     # install the pip dev dependencies
-    cx.run(f"$ANACONDA_DIR/envs/{PY_ENV_NAME}/bin/pip install -r configs/{env_subname}.requirements.txt")
+    cx.run(f"$ANACONDA_DIR/envs/{env_name}/bin/pip install -r configs/{name}.requirements.txt")
 
     # install the conda dev dependencies
-    cx.run(f"conda env update -n {PY_ENV_NAME} --file configs/{env_subname}.env.yaml")
+    cx.run(f"conda env update -n {env_name} --file configs/{name}.env.yaml")
 
     print("--------------------------------------------------------------------------------")
-    print(f"run: conda activate {PY_ENV_NAME}")
+    print(f"run: conda activate {env_name}")
+
