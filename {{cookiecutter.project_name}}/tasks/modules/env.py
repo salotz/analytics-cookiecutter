@@ -13,9 +13,6 @@ def build(cx, name='common'):
     cx.run(f"conda create -y -n {env_name} python={PY_VERSION}",
         pty=True)
 
-    # install the local package
-    cx.run(f"$ANACONDA_DIR/envs/{env_name}/bin/pip install -e .")
-
     # install the pip dev dependencies
     cx.run(f"$ANACONDA_DIR/envs/{env_name}/bin/pip install -r configs/{name}.requirements.txt")
 
