@@ -14,7 +14,10 @@ from .modules import project
 from .modules import org
 from .modules import env
 from .modules import update
+from .modules import cache
 
+# then load all of the submodule namespaces
+modules = [core, py, git, project, org, env, update, cache, ]
 
 # these helper functions are for automatically listing all of the
 # functions defined in the tasks module
@@ -38,8 +41,6 @@ for func in _get_functions(toplevel).values():
     ns.add_task(func)
 
 
-# then load all of the submodule namespaces
-modules = [core, py, git, project, org, env, update, ]
 
 for module in modules:
     ns.add_collection(module)
