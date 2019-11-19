@@ -4,14 +4,6 @@
 # but beware it might break stuff
 from .sysconfig import *
 
-# import plugins:
-
-from .plugins import custom
-
-# specify which plugins to install, the custom one is included by
-# default to get users going
-PLUGIN_MODULES = [custom, ]
-
 ### Project Metadata
 
 # the name of the project
