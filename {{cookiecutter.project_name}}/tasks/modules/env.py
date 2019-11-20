@@ -20,9 +20,6 @@ def build(cx, name='common'):
     # install the conda dev dependencies
     cx.run(f"conda env update -n {env_name} --file configs/{name}.env.yaml")
 
-    # install the pip tools dependencies
-    cx.run(f"$ANACONDA_DIR/envs/{env_name}/bin/pip install -r tools.requirements.txt")
-
     print("--------------------------------------------------------------------------------")
     print(f"run: conda activate {env_name}")
 
