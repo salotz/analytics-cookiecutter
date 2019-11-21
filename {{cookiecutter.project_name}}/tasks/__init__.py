@@ -49,7 +49,7 @@ for module in modules:
 
 try:
     # import all the user defined stuff and override
-    from .config import PLUGIN_MODULES as plugins
+    from .plugins import PLUGIN_MODULES as plugins
 
     for module in plugins:
         ns.add_collection(module)
