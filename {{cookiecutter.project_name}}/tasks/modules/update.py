@@ -19,7 +19,7 @@ def clean(cx):
 
     cx.run(f"rm -rf {COOKIEJAR_DIR}/*")
 
-@task(pre=[init, clean], post=[clean])
+@task(pre=[init, clean], post=[clean], default=True)
 def update(cx):
     """Update the shared modules for this project."""
 

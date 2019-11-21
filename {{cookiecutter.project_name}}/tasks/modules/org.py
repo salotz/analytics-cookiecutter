@@ -2,7 +2,7 @@ from invoke import task
 
 from ..config import *
 
-@task()
+@task(default=True)
 def tangle(cx):
     """Tangle all the code blocks for dirs in TANGLE_DIRS."""
 
