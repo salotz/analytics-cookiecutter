@@ -95,3 +95,13 @@ RESOURCES = [
     'db',
 ]
 
+
+### Org Tangling
+
+TANGLE_DIRS = [
+    'scripts',
+    'configs',
+    'troubleshoot',
+]
+
+TANGLE_FILES = []
