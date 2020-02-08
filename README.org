@@ -1,5 +1,3 @@
-
-
 * Analytics Cookiecutter
 
 A cookiecutter with some super powers. 
@@ -82,6 +80,8 @@ Then we can make our environment to actually do stuff in:
 inv env.dev
 #+end_src
 
+# TODO: this is not implemented as my tasks module thing in my
+# cookiecutter
 If you want to update the built-in task modules run:
 
 #+begin_src bash
