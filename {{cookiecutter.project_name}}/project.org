@@ -171,7 +171,7 @@ Imported modules that will be available to all tasks
 **** Configuration
 
 #+begin_src python :tangle src/{{ cookiecutter.project_slug }}/_tasks.py
-  PROJECT_PATH = "{{ cookiecutter.project_dir }}"
+  PROJECT_PATH = osp.expandvars("$PROJECT_DIR")
 #+end_src
 
 **** Paths
