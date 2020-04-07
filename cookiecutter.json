@@ -6,8 +6,4 @@
     "owner_name" : "Joe Shmo",
     "owner_email" : "joe@shmo.com",
     "owner_nickname" : "jshmo",
-    "shell_profile" : "common",
-    "refugue_domain" : ":none",
-    "project_dir" : "{% if cookiecutter.refugue_domain is ne ':none' %}~/tree/{{cookiecutter.refugue_domain}}/projects/{{cookiecutter.project_name}}{% else %}./{{cookiecutter.project_name}}{% endif %}",
-    "py_version" : "3.7"
 }
