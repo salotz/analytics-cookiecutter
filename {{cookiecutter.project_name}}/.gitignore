@@ -5,6 +5,10 @@
 # literate file (i.e. building them)
 !**/.keep
 
+# envs
+/_conda_envs
+/_venvs
+/_pyenv
 
 # ignore the tangling scripts
 /scripts
