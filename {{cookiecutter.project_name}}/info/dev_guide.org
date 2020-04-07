@@ -1,0 +1,103 @@
+
+* Developer's Guide
+
+** Getting Started
+
+From an ambient ~conda~ environment (if ~venv~ was explicitly
+configured use appropriate virtualenv) install the bootstrapping
+requirements:
+
+#+begin_src bash
+pip install -r .jubeo/requirements.txt
+#+end_src
+
+Then create the virtualenvs (that have already been pinned):
+
+#+begin_src bash
+inv env -n common
+#+end_src
+
+
+** Linking Resources
+
+Resources are directories and files which are managed separately from
+the immediate project repo. 
+This could be for many reasons including:
+
+- data is local, i.e. a cache
+- data is shared between projects
+- data is mobile in the sense that for operational purposes it may
+  have to physically exist in other filesystems (with different paths)
+
+In all of these cases resources are typically directories and files
+which are symlinked into the project.
+
+To make links to these resources (which can be specified in
+~tasks/config.py~) run:
+
+#+begin_src bash
+inv project.link-resources
+#+end_src
+
+** Workflow and Code Execution
+
+All code is written in the ~project.org~ file and code blocks are then
+tangled to different locations.
+
+The main sections are:
+
+- Configuration :: 
+- Workflow :: Textual guides with shell snippets that guide through particular tasks
+- Analysis :: Code modules that get executed from workflows
+- Management :: All other data related to the project, such as tables
+  and other manually managed data.
+
+*** Analysis
+
+The Analysis section is more complex. It has a few sections worth
+describing in detail:
+
+- Tasks :: Collection of pure (potentially cached) functions and
+  *storage combinators* (functions which read and write data from
+  pre-defined locations using path-independent naming specs)
+- Execution :: Collection of standalone 'scripts' that combine specific
+  configurations and functions that are then executed as 'targets'.
+
+Because both tasks and execution targets are exposed as a python
+module (with packaging with ~setup.py~) the analysis and execution can
+be installed, e.g. ~pip install -e .~.
+
+Then functions can be called interactively for exploratory analysis:
+
+#+begin_src python
+from my_analysis._tasks import storage_comb, analyze
+result = analyze(storage_comb)
+#+end_src
+
+Targets can be executed directly as modules with optional arguments:
+
+#+begin_src bash
+python -m my_analysis.execution.target arg0 arg1
+#+end_src
+
+** Caching
+
+Because non-storage combinator functions are pure (or should be) they
+can be cached. We support ~joblib~ caching out of the box. You
+shouldn't have to do anything except decorate cached functions with:
+
+#+begin_src python
+@jlmem.cache
+def analyze():
+    return value
+#+end_src
+
+Just be careful to make sure your caches aren't stale. You can run
+this invoke target to clean the cache if you are ever worried:
+
+#+begin_src bash
+inv cache.clean
+#+end_src
+
+
+
