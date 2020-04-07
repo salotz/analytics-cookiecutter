@@ -11,7 +11,13 @@
 /configs
 /troubleshoot
 
+# ignore data dirs
+/cache
+/data
+/db
 /tmp
+
+# misc other project things
 dask-worker-space
 
 
