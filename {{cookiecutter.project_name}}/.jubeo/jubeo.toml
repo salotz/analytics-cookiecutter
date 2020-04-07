@@ -6,7 +6,7 @@
 upstream_url = "git+https://github.com/salotz/jubeo.git#repos/analytics"
 
 # SNIPPET: for local dev
-# upstream_url = "$HOME/tree/personal/devel/jubeo/repos/python"
+# upstream_url = "$HOME/tree/personal/devel/jubeo/repos/analytics"
 
 [taskset]
 
