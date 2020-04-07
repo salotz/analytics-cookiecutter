@@ -8,28 +8,6 @@
 #+STARTUP: overview inlineimages
 #+TODO: TODO | INPROGRESS WAIT | DONE CANCELLED
 
-* Setup
-
-** Environments
-
-*** common
-
-**** Pip
-
-#+begin_src fundamental :tangle configs/common.requirements.txt
-#+end_src
-
-**** Conda
-
-#+begin_src fundamental :tangle configs/common.env.yaml
-name: {{cookiecutter.project_name}}.common
-channels:
-  - conda-forge
-  - defaults
-#+end_src
-
-
-
 
 * Scratch
 
